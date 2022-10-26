@@ -2,13 +2,9 @@ const express = require('express');
 const compression = require('compression');
 const helmet = require('helmet');
 const cors = require('cors');
-const cron = require('node-cron');
 const { error } = require('./utils');
 const config = require('./config');
 const apiRoutes = require('./routes');
-const {
-  waterService, powerService, liveBalanceService, cronService, summaryService, mqttService, advanceService,
-} = require('./services');
 
 const app = express();
 
@@ -23,40 +19,6 @@ app.get('/', (req, res) => {
 
 // use routes
 app.use(apiRoutes);
-
-cron.schedule('00 20 * * * *', async () => {
-  const [waterDetails, powerDetails] = await Promise.all([
-    cronService.checkIfCronExists({ name: 'water' }),
-    cronService.checkIfCronExists({ name: 'power' }),
-  ]);
-  console.info(`Cron ran at: ${new Date().toISOString()}, ${powerDetails.run_status}`);
-  if (waterDetails.run_status) waterService.updateWaterUsage();
-  if (powerDetails.run_status) powerService.updatePowerUsage();
-});
-
-cron.schedule('*/2 * * * *', async () => {
-  const { run_status } = await cronService.checkIfCronExists({ name: 'wallet' });
-  console.info(`Cron ran at: ${new Date().toISOString()} with Run sttaus as: ${run_status}`);
-  if (run_status) liveBalanceService.updateLiveBalance();
-});
-
-cron.schedule('15 6 * * *', async () => {
-  summaryService.updatePowerCSV();
-});
-
-cron.schedule('0 8 * * *', async () => {
-  mqttService.publishMQTTDaily();
-  powerService.addPCOncePerDay();
-});
-
-cron.schedule('0 * * * *', async () => {
-  advanceService.revertAdvances();
-});
-
-cron.schedule('*/3 * * * *', async () => {
-  mqttService.publishMQTT();
-  powerService.updateLiveBalance();
-});
 
 // global error handler
 app.use(error.handler);
