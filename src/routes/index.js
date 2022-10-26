@@ -13,14 +13,14 @@ const mqttRoutes = require('./mqtt.routes');
 const advanceRoutes = require('./advance.routes');
 const adminRoutes = require('./admin.routes');
 
-apiRoutes.use('/summaries', [summaryRoutes]);
-apiRoutes.use('/powers', [powerRoutes]);
-apiRoutes.use('/waters', [waterRoutes]);
-apiRoutes.use('/live-balances', [liveBalanceRoutes]);
+// apiRoutes.use('/summaries', [summaryRoutes]);
+// apiRoutes.use('/powers', [powerRoutes]);
+// apiRoutes.use('/waters', [waterRoutes]);
+// apiRoutes.use('/live-balances', [liveBalanceRoutes]);
 apiRoutes.use('/crons', [cronRoutes]);
-apiRoutes.use('/wallets', [walletRoutes]);
-apiRoutes.use('/mqtt', [mqttRoutes]);
-apiRoutes.use('/advances', [advanceRoutes]);
+// apiRoutes.use('/wallets', [walletRoutes]);
+// apiRoutes.use('/mqtt', [mqttRoutes]);
+// apiRoutes.use('/advances', [advanceRoutes]);
 
 // ADMIN API
 apiRoutes.use('/admin', [adminRoutes]);
